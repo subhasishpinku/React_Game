@@ -1,20 +1,111 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, ImageBackground , SafeAreaView} from 'react-native';
+import StartGameScreen from './screens/StartGameScreen';
+import GameScreen from './screens/GameScreen';
+import {LinearGradient} from 'expo-linear-gradient';
+import { useState } from 'react';
+import Colors from './constants/colors';
+import GameOverScreen from './screens/GameOverScreen';
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+import {StatusBar} from 'expo-status-bar'
+import { SplashScreen } from 'expo-splash-screen';
+import React, { useEffect } from 'react';
 
 export default function App() {
+    // useEffect(() => {
+  //   // Prevent native splash screen from auto-hiding prematurely
+  //   async function preventAutoHide() {
+  //     try {
+  //       await SplashScreen.preventAutoHideAsync();
+  //       console.log('Auto hide prevented.');
+  //     } catch (error) {
+  //       console.warn('Preventing auto hide failed:', error);
+  //     }
+  //   }
+
+  //   preventAutoHide();
+
+  //   // Simulating some loading process
+  //   setTimeout(async () => {
+  //     try {
+  //       // Hide splash screen after 2 seconds
+  //       await SplashScreen.hideAsync();
+  //       console.log('Splash screen hidden after 2 seconds.');
+  //     } catch (error) {
+  //       console.warn('Hiding splash screen failed:', error);
+  //     }
+  //   }, 2000);
+  // }, []);
+  const [userNumber, setUserNumber] = useState();
+  const [gameIsOver, setGameIsOver] = useState(true);
+  const [guessRounds, setGuessRounds] = useState(0);
+
+  const [fontsLoaded] = useFonts({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  function pickedNumberHandler(pickedNumber) {
+    setUserNumber(pickedNumber);
+    setGameIsOver(false);
+  }
+
+  function gameOverHandler() {
+    setGameIsOver(true);
+  }
+
+  function startNewGameHandler() {
+    setUserNumber(null);
+    setGuessRounds(0);
+  }
+
+  let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
+
+  if (userNumber) {
+    screen = (
+      <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
+    );
+  }
+
+  if (gameIsOver && userNumber) {
+    screen = (
+      <GameOverScreen
+        userNumber={userNumber}
+        roundsNumber={guessRounds}
+        onStartNewGame={startNewGameHandler}
+      />
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+    <StatusBar style="light"/>
+    <LinearGradient
+      colors={[Colors.primary700, Colors.accent500]}
+      style={styles.rootScreen}
+    >
+      <ImageBackground
+        source={require('./assets/images/background.png')}
+        resizeMode="cover"
+        style={styles.rootScreen}
+        imageStyle={styles.backgroundImage}
+      >
+        <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
+      </ImageBackground>
+    </LinearGradient>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  rootScreen: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  backgroundImage: {
+    opacity: 0.15,
   },
 });

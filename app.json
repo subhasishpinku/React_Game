@@ -3,7 +3,7 @@
     "name": "ReactCourse1",
     "slug": "ReactCourse1",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -21,10 +21,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.subhasishsingha.ReactCourse1"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eefbade1-ca3b-4232-be98-253346acc811"
+      }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
